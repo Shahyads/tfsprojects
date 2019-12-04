@@ -284,10 +284,14 @@ namespace TFSProjectsWin
                                         {
                                             if (mainForm.rtfMain.InvokeRequired)
                                             {
-                                                PrincipalContext principalContext = new PrincipalContext(ContextType.Domain, mainForm.tfsID.Domain);
                                                 var accountName = mainForm.tfsID.Domain + '\\' + mainForm.tfsID.AccountName;
-                                                UserPrincipal user1 = UserPrincipal.FindByIdentity(principalContext, mainForm.tfsID.AccountName);
-                                                if (mainForm.tfsID.MailAddress != "" && (user1?.Enabled ?? false))
+                                                UserPrincipal winUser = null;
+                                                if (mainForm.tfsID.Type == Microsoft.TeamFoundation.Server.IdentityType.WindowsUser)
+                                                {
+                                                    PrincipalContext principalContext = new PrincipalContext(ContextType.Domain, mainForm.tfsID.Domain);
+                                                    winUser = UserPrincipal.FindByIdentity(principalContext, mainForm.tfsID.AccountName);
+                                                }
+                                                if (mainForm.tfsID.MailAddress != "" && (winUser?.Enabled ?? false))
                                                 {
                                                     mainForm.rtfMain.Invoke(new MethodInvoker(delegate { mainForm.rtfMain.AppendText(string.Format("\n\t\tName : {0}\t\t\tEmail : {1}", mainForm.tfsID.DisplayName, mainForm.tfsID.MailAddress)); }));
                                                 }
@@ -312,10 +316,14 @@ namespace TFSProjectsWin
                                                     {
                                                         if ((mainForm.myUsers.Contains(mainForm.tfsID.MailAddress.ToString()) == false)&&(mainForm.myUsers.Contains(mainForm.tfsID.DisplayName.ToString()) == false))
                                                         {
-                                                            PrincipalContext principalContext = new PrincipalContext(ContextType.Domain, mainForm.tfsID.Domain);
                                                             var accountName = mainForm.tfsID.Domain + '\\' + mainForm.tfsID.AccountName;
-                                                            UserPrincipal user1 = UserPrincipal.FindByIdentity(principalContext, mainForm.tfsID.AccountName);
-                                                            if (user1?.Enabled ?? false)
+                                                            UserPrincipal winUser = null;
+                                                            if (mainForm.tfsID.Type == Microsoft.TeamFoundation.Server.IdentityType.WindowsUser)
+                                                            {
+                                                                PrincipalContext principalContext = new PrincipalContext(ContextType.Domain, mainForm.tfsID.Domain);
+                                                                winUser = UserPrincipal.FindByIdentity(principalContext, mainForm.tfsID.AccountName);
+                                                            }
+                                                            if (winUser?.Enabled ?? false)
                                                             {
                                                                 mainForm.myUsers.Add(mainForm.tfsID.MailAddress.ToString()); //print the email address if myUsers doesn't already contain it, if the address isn't empty, and if allCollections is false
                                                                 mainForm.rtfMain.Invoke(new MethodInvoker(delegate { mainForm.rtfMain.AppendText(string.Format("{0} email found! --Continuing to discover other users...\n", mainForm.tfsID.DisplayName.ToString())); }));
@@ -668,10 +676,14 @@ namespace TFSProjectsWin
                                         {
                                             if (mainForm.tfsID.MailAddress.ToString() != "")
                                             {
-                                                PrincipalContext principalContext = new PrincipalContext(ContextType.Domain, mainForm.tfsID.Domain);
                                                 var accountName = mainForm.tfsID.Domain + '\\' + mainForm.tfsID.AccountName;
-                                                UserPrincipal user1 = UserPrincipal.FindByIdentity(principalContext, mainForm.tfsID.AccountName);
-                                                if (user1?.Enabled ?? false)
+                                                UserPrincipal winUser = null;
+                                                if (mainForm.tfsID.Type == Microsoft.TeamFoundation.Server.IdentityType.WindowsUser)
+                                                {
+                                                    PrincipalContext principalContext = new PrincipalContext(ContextType.Domain, mainForm.tfsID.Domain);
+                                                    winUser = UserPrincipal.FindByIdentity(principalContext, mainForm.tfsID.AccountName);
+                                                }
+                                                if (winUser?.Enabled ?? false)
                                                 {
                                                     mainForm.myUsers.Add(mainForm.tfsID.MailAddress.ToString());
                                                     mainForm.rtfMain.Invoke(new MethodInvoker(delegate { mainForm.rtfMain.AppendText(string.Format("{0} email found! --Continuing to discover other users...\n", mainForm.tfsID.DisplayName.ToString())); }));
